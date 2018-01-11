@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+
+	<!-- 自动扫描且只扫描@Controller -->
+	<context:component-scan base-package="cn.mycom.**.controller,cn.mycom.aspect">
+		<context:include-filter type="annotation"
+			expression="org.aspectj.lang.annotation.Aspect" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Service" />
+	</context:component-scan>
+
+	<!-- i18n国际化 <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver"/> 
+		<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"> 
+		<property name="basename"> <value>i18n/messages</value> </property> </bean> -->
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<mvc:annotation-driven conversion-service="conversionService">
+		<mvc:message-converters register-defaults="true">
+			<bean
+				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
+				<property name="supportedMediaTypes">
+					<list>
+						<value>application/json;charset=UTF-8</value>
+						<value>application/json;charset=GBK</value>
+					</list>
+				</property>
+
+				<!--格式化JSON到客户问的日期格式，或者客户端以JSON格式传递到服务端的日期对象 <property name="objectMapper"> 
+					<bean class="cn.mycom.spring.mvc.ConverterSuper"> <property name="dateFormat" 
+					value="yyyy-MM-dd HH:mm:ss"/> </bean> </property> -->
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<!-- 对静态资源文件的访问 -->
+	<mvc:default-servlet-handler />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
+		in the /WEB-INF/views directory -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!-- 配置自定义类型转换处理类 -->
+	<bean id="conversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="converters">
+			<list>
+				<!--转化页面传递过来的日期类型，非JSON格式 -->
+				<bean class="cn.mycom.spring.mvc.StringToDateConverter" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- 配置文件上传功能 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 配置最大可上传文件大小(5M=5242880) -->
+		<property name="maxUploadSize" value="-1" /><!-- 程序代码自己控制大小 -->
+	</bean>
+	<!-- 拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!-- 拦截的请求 -->
+			<mvc:mapping path="/sysadminMain/**" />
+			<mvc:exclude-mapping path="/sysadminMain/index.do" />
+			<mvc:exclude-mapping path="/sysadminMain/notLogin.do" />
+			<mvc:exclude-mapping path="/sysadminMain/notPermission.do" />
+			<mvc:exclude-mapping path="/sysadminMain/error.do" />
+			<!-- 拦截器类 -->
+			<bean class="cn.mycom.interceptor.SysAdminInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<!-- springMVC统一处理异常 -->
+	<bean class="cn.mycom.exceptionresolver.DefaultHandlerExceptionResolver"></bean>
+	<!-- 启动AOP支持 -->
+	<aop:aspectj-autoproxy />
+
+</beans>

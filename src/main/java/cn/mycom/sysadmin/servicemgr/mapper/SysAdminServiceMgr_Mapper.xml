@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mycom.sysadmin.servicemgr.mapper.SysAdminServiceMgrDao">
+	<!-- 分页 getPageServiceMgrs totalPageServiceMgrs start-->
+	<select id="getPageServiceMgrs" resultType="cn.mycom.sysadmin.servicemgr.domain.ServiceMgr">
+		select mgr.id,mgr.loginName,mgr.mobile,mgr.userMail,mgr.loginPassword,mgr.addTime,mgr.updateTime,mgr.isAllowLogin,mgr.roleId,mr.roleName
+		from ${baseTablePrefix}service_mgr mgr 
+		left join ${baseTablePrefix}mgr_role mr on mr.roleId=mgr.roleId
+		where 1=1
+		<include refid="pageFilterSql"></include>
+		order by mgr.updateTime desc,mgr.addTime desc
+		<if test="page != null and page.startIndex != null  and page.pageSize != null ">
+			limit ${page.startIndex},${page.pageSize}
+		</if>
+	</select>
+	<select id="totalPageServiceMgrs" resultType="cn.mycom.utils.http.domain.Page">
+		select count(*) as totalRecord from ${baseTablePrefix}service_mgr mgr 
+		left join ${baseTablePrefix}mgr_role mr on mr.roleId=mgr.roleId
+		where 1=1
+		<include refid="pageFilterSql"></include>
+	</select>
+	<sql id="pageFilterSql">
+		<if test="null != loginName and '' != loginName">
+		and mgr.loginName like CONCAT('%',#{loginName},'%')
+		</if>
+		<if test="null != roleId and '' != roleId">
+		and mgr.roleId =#{roleId}
+		</if>
+		<if test="null != mobile and '' != mobile">
+		and mgr.mobile like CONCAT('%',#{mobile},'%')
+		</if>
+		<if test="null != isAllowLogin and '' != isAllowLogin">
+		and mgr.isAllowLogin =#{isAllowLogin}
+		</if>
+	</sql>
+	<!-- 分页 getPageServiceMgrs  totalPageServiceMgrs end-->
+	
+	<!-- 查询可登录帐号 by loginName -->
+	<select id="findServiceMgrByLoginName" resultType="cn.mycom.sysadmin.servicemgr.domain.ServiceMgr">
+		select mgr.id,mgr.loginName,mgr.mobile,mgr.userMail,mgr.loginPassword,mgr.addTime,mgr.updateTime,mgr.isAllowLogin,mgr.roleId,mr.roleName
+		from ${baseTablePrefix}service_mgr mgr 
+		left join ${baseTablePrefix}mgr_role mr on mr.roleId=mgr.roleId
+		where 1=1 and mgr.loginName=#{loginName}
+	</select>
+	<select id="findServiceMgrsByRoleId" resultType="cn.mycom.sysadmin.servicemgr.domain.ServiceMgr">
+		select mgr.id,mgr.loginName,mgr.mobile,mgr.userMail,mgr.loginPassword,mgr.addTime,mgr.updateTime,mgr.isAllowLogin,mgr.roleId,mr.roleName
+		from ${baseTablePrefix}service_mgr mgr 
+		left join ${baseTablePrefix}mgr_role mr on mr.roleId=mgr.roleId
+		where 1=1 and mgr.roleId=#{roleId}
+	</select>
+	<select id="findServiceMgrsById" resultType="cn.mycom.sysadmin.servicemgr.domain.ServiceMgr">
+		select mgr.id,mgr.loginName,mgr.mobile,mgr.userMail,mgr.loginPassword,mgr.addTime,mgr.updateTime,mgr.isAllowLogin,mgr.roleId,mr.roleName
+		from ${baseTablePrefix}service_mgr mgr 
+		left join ${baseTablePrefix}mgr_role mr on mr.roleId=mgr.roleId
+		where 1=1 and mgr.id=#{id}
+	</select>
+	<update id="updateServiceMgrById"  parameterType="map">
+	update ${baseTablePrefix}service_mgr set updateTime=#{updateTime}
+	<if test="isAllowLogin != null and '' != isAllowLogin">
+	 ,isAllowLogin=#{isAllowLogin}
+	</if>
+	<if test="loginPassword != null and '' != loginPassword">
+	,loginPassword=#{loginPassword}
+	</if>
+	<if test="mobile != null and '' != mobile">
+	,mobile=#{mobile}
+	</if>
+	<if test="userMail != null and '' != userMail">
+	,userMail=#{userMail}
+	</if>
+	<if test="roleId != null and '' != roleId">
+	,roleId=#{roleId}
+	</if>
+	where id=#{id}
+	</update>
+	
+	<insert id="addServiceMgr"  parameterType="map">
+		insert into ${baseTablePrefix}service_mgr(loginName,mobile,loginPassword,isAllowLogin,addTime,updateTime,userMail,roleId)
+		values(#{loginName},#{mobile},#{loginPassword},#{isAllowLogin},#{addTime},#{updateTime},#{userMail},#{roleId})
+	</insert>
+	<delete id="deleteServiceMgrById"   parameterType="map">
+	delete from ${baseTablePrefix}service_mgr where id=#{adminId}
+	</delete>	
+	
+	<update id="updateLockServiceMgr"  parameterType="map">
+	update ${baseTablePrefix}service_mgr set  isAllowLogin= 'N',updateTime=#{updateTime}  where id=#{adminId}
+	</update>
+	<update id="updateUnlockServiceMgr"  parameterType="map">
+	update ${baseTablePrefix}service_mgr set  isAllowLogin= 'Y',updateTime=#{updateTime}  where id=#{adminId}
+	</update>
+</mapper>

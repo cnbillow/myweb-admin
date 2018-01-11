@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- 调度工厂 -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="exposeSchedulerInRepository" value="true" />
+		<property name="triggers">
+			<list>
+				<!-- 
+				TestQuartzTrigger定时触发器
+				 <ref local="TestQuartzTrigger" /> 
+				 -->				 
+			</list>
+		</property>
+	</bean>
+	<!-- 配置触发器 -->
+	<!-- 这里不可以直接在属性jobDetail中引用taskJob，因为他要求的是一个jobDetail类型的对象，所以我们得通过MethodInvokingJobDetailFactoryBean来转一下 -->
+	<!-- 1 TestQuartzTrigger start************************************************************************************ -->
+	<bean name="TestQuartz" class="cn.mycom.quartz.TestQuartz" />
+	<bean id="TestBean"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="TestQuartz" />
+		</property>
+		<property name="targetMethod">
+			<value>execute</value>
+		</property>
+	</bean>
+	<!-- Test定时触发器 -->
+	<bean id="TestQuartzTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="TestBean" />
+		</property>
+		<property name="cronExpression">
+			<!-- 每天每分钟执行一次 -->
+			<value>0 0/1 * * * ? </value>
+		</property>
+	</bean>
+	<!-- 1 TestQuartzTrigger end************************************************************************************ -->
+
+</beans>
+ 

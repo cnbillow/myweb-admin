@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mycom.sysadmin.menupermission.mapper.SysAdminMenuPermissionDao">
+	<select id="findMenuPermissionCodeIsMust" resultType="cn.mycom.sysadmin.menupermission.domain.MenuPermission">
+		select mp.* from ${baseTablePrefix}menu_permission mp 
+		where 1=1 and  mp.mpStatus='Y' and mp.isHasPermission='Y'
+		and mpCode=#{mpCode}
+	</select>	
+	<select id="findMenuPermissionsByRoleId" resultType="cn.mycom.sysadmin.menupermission.domain.MenuPermission">
+		select distinct * from(
+			select mp.* from ${baseTablePrefix}menu_permission mp
+			join ${baseTablePrefix}mgrrole_menupermission mrmp on mrmp.mpId=mp.mpId
+			where  1=1 and  mp.mpStatus='Y' and mp.isHasPermission='Y' and mp.mpPid=0 and mrmp.roleId=#{roleId}
+			union all
+			select mp.* from ${baseTablePrefix}menu_permission mp
+			where 1=1 and mp.isHasPermission='N'
+		) t
+		order by mpSort desc
+	</select>
+	<select id="findMenuPermissionsByRoleIdAndPid" resultType="cn.mycom.sysadmin.menupermission.domain.MenuPermission">
+		select distinct * from(
+			select mp.* from ${baseTablePrefix}menu_permission mp
+			join ${baseTablePrefix}mgrrole_menupermission mrmp on mrmp.mpId=mp.mpId
+			where 1=1 and mp.mpStatus='Y' and mp.isHasPermission='Y' and  mp.mpPid=#{mpPid} and mrmp.roleId=#{roleId}
+			union all
+			select mp.* from ${baseTablePrefix}menu_permission mp
+			where 1=1 and mp.isHasPermission='N'
+		) t
+		order by mpSort desc
+	</select>
+	
+	
+	<!-- 分页 getPageMenuPermissions totalPageMenuPermissions start-->
+	<select id="getPageMenuPermissions" resultType="cn.mycom.sysadmin.menupermission.domain.MenuPermission">
+		select mp.*,pmp.mpName as mpPName from ${baseTablePrefix}menu_permission mp
+		left join ${baseTablePrefix}menu_permission pmp on mp.mpPid=pmp.mpId
+		where 1=1
+		<include refid="pageFilterSql"></include>
+		order by mp.mpSort desc,mp.updateTime desc,mp.addTime desc
+		<if test="page != null and page.startIndex != null  and page.pageSize != null ">
+			limit ${page.startIndex},${page.pageSize}
+		</if>
+	</select>
+	<select id="totalPageMenuPermissions" resultType="cn.mycom.utils.http.domain.Page">
+		select count(*) as totalRecord from ${baseTablePrefix}menu_permission  mp
+		where 1=1
+		<include refid="pageFilterSql"></include>
+	</select>
+	<sql id="pageFilterSql">
+		<!-- 必填父菜单 -->
+		and mp.mpPId=#{mpPId}
+		<if test="null != mpName and '' != mpName">
+		and (
+		mp.mpName like CONCAT('%',#{mpName},'%')
+		or mp.mpCode like CONCAT('%',#{mpName},'%')
+		or mp.mpUrl like CONCAT('%',#{mpName},'%')
+		)
+		</if>
+		<if test="mpStatus != null and '' != mpStatus">
+		and mp.mpStatus=#{mpStatus}
+		</if>
+		<if test="mpType != null and '' != mpType">
+		and mp.mpType=#{mpType}
+		</if>
+	</sql>
+	<!-- 分页 getPageMenuPermissions  totalPageMenuPermissions end-->
+	
+	<select id="getMenus"  parameterType="map" resultType="cn.mycom.sysadmin.menupermission.domain.MenuPermission">
+		select mp.*,pmp.mpName as mpPName from ${baseTablePrefix}menu_permission mp
+		left join ${baseTablePrefix}menu_permission pmp on mp.mpPid=pmp.mpId
+		where 1=1 and mp.mpType=#{mpType}
+		and mp.mpPId = #{mpPId}
+	</select>
+	<select id="findMenuPermissionById"  parameterType="map" resultType="cn.mycom.sysadmin.menupermission.domain.MenuPermission">
+		select mp.*,pmp.mpName as mpPName from ${baseTablePrefix}menu_permission mp
+		left join ${baseTablePrefix}menu_permission pmp on mp.mpPid=pmp.mpId
+		where 1=1 and mp.mpId=#{mpId}
+	</select>
+	<select id="findMenuPermissionByMpCode"  parameterType="map" resultType="cn.mycom.sysadmin.menupermission.domain.MenuPermission">
+		select mp.*,pmp.mpName as mpPName from ${baseTablePrefix}menu_permission mp
+		left join ${baseTablePrefix}menu_permission pmp on mp.mpPid=pmp.mpId
+		where 1=1 and mp.mpCode=#{mpCode}
+	</select>
+	<update id="updateMenuPermissionById"  parameterType="cn.mycom.sysadmin.menupermission.domain.MenuPermission">
+		update ${baseTablePrefix}menu_permission set updateTime=#{updateTime},mpIcon=#{mpIcon},
+		mpUrl=#{mpUrl},mpSort=#{mpSort}
+		<if test="mpPId != null">
+		,mpPId=#{mpPId}
+		</if>
+		<if test="mpName != null and '' != mpName">
+		,mpName=#{mpName}
+		</if>
+		<if test="mpCode != null and '' != mpCode">
+		,mpCode=#{mpCode}
+		</if>
+		<if test="isHasPermission != null and '' != isHasPermission">
+		,isHasPermission=#{isHasPermission}
+		</if>
+		<if test="mpStatus != null and '' != mpStatus">
+		,mpStatus=#{mpStatus}
+		</if>
+		<if test="mpType != null and '' != mpType">
+		,mpType=#{mpType}
+		</if>
+		where mpId=#{mpId}
+	</update>
+	
+	<insert id="addMenuPermission"  parameterType="cn.mycom.sysadmin.menupermission.domain.MenuPermission">
+		insert into ${baseTablePrefix}menu_permission(mpPId,mpName,mpCode,isHasPermission,mpStatus,
+		mpType,mpIcon,mpUrl,mpSort,addTime,updateTime)
+		values(#{mpPId},#{mpName},#{mpCode},#{isHasPermission},#{mpStatus},
+		#{mpType},#{mpIcon},#{mpUrl},#{mpSort},#{addTime},#{updateTime})
+	</insert>
+	<delete id="deleteMenuPermissionById"   parameterType="map">
+		delete from ${baseTablePrefix}menu_permission where mpId=#{mpId}
+	</delete>
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SysAdminPropertiesDao">
+	<!-- 分页 getPagePropertiess totalPagePropertiess start-->
+	<select id="getPagePropertiess" resultType="cn.mycom.base.domain.Properties">
+		select * from ${baseTablePrefix}properties 
+		where 1=1
+		<include refid="pageFilterSql"></include>
+		order by updateTime desc,addTime desc
+		<if test="page != null and page.startIndex != null  and page.pageSize != null ">
+			limit ${page.startIndex},${page.pageSize}
+		</if>
+	</select>
+	<select id="totalPagePropertiess" resultType="cn.mycom.utils.http.domain.Page">
+		select count(*) as totalRecord from ${baseTablePrefix}properties 
+		where 1=1
+		<include refid="pageFilterSql"></include>
+	</select>
+	<sql id="pageFilterSql">
+		<if test="null != propKey and '' != propKey">
+		and (
+		propKey like CONCAT('%',#{propKey},'%')
+		or propValue like CONCAT('%',#{propKey},'%')
+		or remark like CONCAT('%',#{propKey},'%')
+		)
+		</if>
+	</sql>
+	<!-- 分页 getPagePropertiess  totalPagePropertiess end-->
+	
+	<select id="findPropertiesByKey" resultType="cn.mycom.base.domain.Properties">
+		select * from ${baseTablePrefix}properties  
+		where 1=1 and propKey=#{propKey}
+	</select>
+	
+	<update id="updateProperties"  parameterType="map">
+		update ${baseTablePrefix}properties set updateTime=#{updateTime},remark=#{remark}
+		<if test="propValue != null and '' != propValue">
+		,propValue=#{propValue}
+		</if>
+		where propKey=#{propKey}
+	</update>
+	
+	<insert id="addProperties"  parameterType="map">
+		insert into ${baseTablePrefix}properties(propKey,propValue,remark,addTime,updateTime)
+		values(#{propKey},#{propValue},#{remark},#{addTime},#{updateTime})
+	</insert>
+	<delete id="deleteProperties"   parameterType="map">
+		delete from ${baseTablePrefix}properties where propKey=#{propKey}
+	</delete>	
+</mapper>

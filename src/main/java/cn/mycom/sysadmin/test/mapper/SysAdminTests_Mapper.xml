@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SysAdminTestsDao">
+	<resultMap type="cn.mycom.sysadmin.test.domain.Tests" id="thisbaseMap">
+		<id property="testId" column="testId" />
+		<result property="name" column="name" />
+		<result property="updateTime" column="updateTime" />
+		<result property="addTime" column="addTime" />
+	</resultMap>
+	<!-- 分页 getPageTestss totalPageTestss start -->
+	<select id="getPageTestss" resultMap="thisbaseMap"
+		parameterType="cn.mycom.sysadmin.test.domain.Tests">
+		select * from tests t
+		where 1=1
+		<include refid="pageFilterSql"></include>
+		order by t.updateTime desc,t.addTime desc
+		<if
+			test="page != null and page.startIndex != null  and page.pageSize != null ">
+			limit ${page.startIndex},${page.pageSize}
+		</if>
+	</select>
+	<select id="totalPageTestss" resultType="cn.mycom.utils.http.domain.Page">
+		select count(*) as totalRecord from tests t
+		where 1=1
+		<include refid="pageFilterSql"></include>
+	</select>
+	<sql id="pageFilterSql">
+		<if test="null != visitorPtestId and '' != visitorPtestId">
+			and (
+			t.name like CONCAT('%',#{name},'%')
+			)
+		</if>
+		<choose>
+			<when test="null != startDate1 and null != endDate1">
+				and (#{endDate1}>=t.addTime and t.addTime>=#{startDate1})
+			</when>
+			<when test="null != endDate1">
+				and #{endDate1}>=t.addTime
+			</when>
+			<when test="null != startDate1">
+				and t.addTime>=#{startDate1}
+			</when>
+		</choose>
+	</sql>
+	<!-- 分页 getPageTestss totalPageTestss end -->
+
+	<select id="findTestsById" resultMap="thisbaseMap">
+		select * from tests
+		where 1=1 and testId=#{testId}
+	</select>
+
+	<update id="updateTests" parameterType="cn.mycom.sysadmin.test.domain.Tests">
+		update tests set updateTime=#{updateTime}
+		<if test="name != null and '' != name">
+			,name=#{name}
+		</if>
+		where testId=#{testId}
+	</update>
+	<insert id="addTests" parameterType="cn.mycom.sysadmin.test.domain.Tests">
+		insert into
+		tests(name,addTime,updateTime)
+		values(#{name},#{addTime},#{updateTime})
+	</insert>
+	<delete id="deleteTests" parameterType="map">
+		delete from tests
+		where testId=#{testId}
+	</delete>
+</mapper>

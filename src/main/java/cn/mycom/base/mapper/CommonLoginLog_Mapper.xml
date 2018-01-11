@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mycom.base.mapper.CommonLoginLogDao">
+	<insert id="insertLoginLog" parameterType="cn.mycom.base.domain.LoginLog">
+		INSERT INTO ${baseTablePrefix}login_log(LOGINUSERID, LOGINNAME, IP, USERMOBILE, ALIASNUM, 
+		PROVCODE, AREACODE, CARDTYPE, LOGINTYPE, USERTYPE, LOGINTIME)
+		VALUES(#{loginUserId},#{loginName},#{ip},#{userMobile},#{aliasNum},
+		#{provcode},#{areacode},#{cardType},#{loginType},#{userType},#{loginTime})
+	</insert>
+	<select id="queryLastLoginByUserId" parameterType="map" resultType="cn.mycom.base.domain.LoginLog">
+		<!-- 取最后登录 -->
+		select * from ${baseTablePrefix}login_log where LOGINUSERID=#{loginUserId} order by LOGINTIME desc limit 1,1
+	</select>
+	
+	<!-- 分页 getPageLoginLogs totalPageLoginLogs start-->
+	<select id="getPageLoginLogs" resultType="cn.mycom.base.domain.LoginLog">
+		select *
+		from base_mgr_core_login_log log 
+		left join base_mgr_core_service_mgr logmgr on logmgr.id=log.LOGINUSERID
+		where 1=1
+		<include refid="pageFilterSql"></include>
+		order by log.LOGINTIME desc
+		<if test="page != null and page.startIndex != null  and page.pageSize != null ">
+			limit ${page.startIndex},${page.pageSize}
+		</if>
+	</select>
+	<select id="totalPageLoginLogs" resultType="cn.mycom.utils.http.domain.Page">
+		select count(*) as totalRecord from base_mgr_core_login_log log 
+		where 1=1
+		<include refid="pageFilterSql"></include>
+	</select>
+	<sql id="pageFilterSql">
+		<if test="null != loginName and '' != loginName">
+		and(
+		log.loginName like CONCAT('%',#{loginName},'%')
+		or log.IP like CONCAT('%',#{loginName},'%')
+		)
+		</if>
+		<choose>
+			<when test="null != startDate1 and null != endDate1">
+				and (#{endDate1}>=log.LOGINTIME and log.LOGINTIME>=#{startDate1})
+			</when>
+			<when test="null != endDate1">
+				and #{endDate1}>=log.LOGINTIME
+			</when>
+			<when test="null != startDate1">
+				and log.LOGINTIME>=#{startDate1}
+			</when>
+		</choose>
+	</sql>
+	<!-- 分页 getPageLoginLogs  totalPageLoginLogs end-->
+</mapper>

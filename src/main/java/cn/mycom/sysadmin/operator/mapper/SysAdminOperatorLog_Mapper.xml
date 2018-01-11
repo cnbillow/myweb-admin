@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mycom.sysadmin.operator.mapper.SysAdminOperatorLogDao">
+	<select id="findAllUsedConfig" resultType="cn.mycom.sysadmin.operator.domain.OperatorLogConfig">
+		select * from ${baseTablePrefix}operator_log_config where 1=1  and oplStatus='Y'
+	</select>
+	<insert id="addOperatorLog" parameterType="map">
+		INSERT INTO ${baseTablePrefix}operator_log(opAuName,opAuId,opBusinessName,opBusinessDesc,
+		opMethodType,opContent,opJsonContent,opIp,addTime)
+		VALUES(#{opAuName},#{opAuId},#{opBusinessName},#{opBusinessDesc},
+		#{opMethodType},#{opContent},#{opJsonContent},#{opIp},#{addTime})
+	</insert>
+	
+	<!-- 分页 getPageOperatorLogs totalPageOperatorLogs start-->
+	<select id="getPageOperatorLogs" resultType="cn.mycom.sysadmin.operator.domain.OperatorLog">
+		select *
+		from ${baseTablePrefix}operator_log log 
+		where 1=1
+		<include refid="pageFilterSql"></include>
+		order by log.addTime desc
+		<if test="page != null and page.startIndex != null  and page.pageSize != null ">
+			limit ${page.startIndex},${page.pageSize}
+		</if>
+	</select>
+	<select id="totalPageOperatorLogs" resultType="cn.mycom.utils.http.domain.Page">
+		select count(*) as totalRecord from ${baseTablePrefix}operator_log log 
+		where 1=1
+		<include refid="pageFilterSql"></include>
+	</select>
+	<sql id="pageFilterSql">
+		<if test="null != opAuName and '' != opAuName">
+		and(
+		log.opAuName like CONCAT('%',#{opAuName},'%')
+		or log.opBusinessName like CONCAT('%',#{opAuName},'%')
+		or log.opBusinessName like CONCAT('%',#{opAuName},'%')
+		or log.opContent like CONCAT('%',#{opAuName},'%')
+		or log.opIp like CONCAT('%',#{opAuName},'%')
+		)
+		</if>
+		<choose>
+			<when test="null != startDate1 and null != endDate1">
+				and (#{endDate1}>=log.addTime and log.addTime>=#{startDate1})
+			</when>
+			<when test="null != endDate1">
+				and #{endDate1}>=log.addTime
+			</when>
+			<when test="null != startDate1">
+				and log.addTime>=#{startDate1}
+			</when>
+		</choose>
+	</sql>
+	<!-- 分页 getPageOperatorLogs  totalPageOperatorLogs end-->
+</mapper>

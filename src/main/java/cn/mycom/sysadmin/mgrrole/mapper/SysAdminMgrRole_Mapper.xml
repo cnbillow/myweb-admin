@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mycom.sysadmin.mgrrole.mapper.SysAdminMgrRoleDao">
+	<!-- 分页 getPageMgrRoles  totalPageMgrRoles start-->
+	<select id="getPageMgrRoles" resultType="cn.mycom.sysadmin.mgrrole.domain.MgrRole">
+		select mr.* from ${baseTablePrefix}mgr_role mr
+		where 1=1
+		<include refid="pageFilterSql"></include>
+		order by mr.roleSort desc,mr.addTime desc
+		<if test="page != null and page.startIndex != null  and page.pageSize != null ">
+			limit ${page.startIndex},${page.pageSize}
+		</if>
+	</select>
+	<select id="totalPageMgrRoles" resultType="cn.mycom.utils.http.domain.Page">
+		select count(*) as totalRecord from ${baseTablePrefix}mgr_role mr
+		where 1=1
+		<include refid="pageFilterSql"></include>
+	</select>
+	<sql id="pageFilterSql">
+		<if test="null != roleName and '' != roleName">
+		and mr.roleName like CONCAT('%',#{roleName},'%')
+		</if>
+		<if test="null != roleStatus and '' != roleStatus">
+		and mr.roleStatus =#{roleStatus}
+		</if>
+	</sql>
+	<!-- 分页 getPageMgrRoles  totalPageMgrRoles end-->
+	
+	
+	<select id="findMgrRoleByRoleName" resultType="cn.mycom.sysadmin.mgrrole.domain.MgrRole">
+		select mr.* from ${baseTablePrefix}mgr_role  mr
+		where 1=1 and  mr.roleName=#{roleName}
+	</select>
+	<select id="findMgrRoleById" resultType="cn.mycom.sysadmin.mgrrole.domain.MgrRole">
+		select mr.* from ${baseTablePrefix}mgr_role  mr
+		where 1=1 and mr.roleId=#{roleId}
+	</select>
+	<update id="updateMgrRoleById"  parameterType="map">
+		update ${baseTablePrefix}mgr_role set  updateTime=#{updateTime},roleSort=#{roleSort}
+		<if test="roleName != null and '' != roleName">
+		,roleName=#{roleName}
+		</if>
+		<if test="roleDesc != null and '' != roleDesc">
+		,roleDesc=#{roleDesc}
+		</if>
+		<if test="roleStatus != null and '' != roleStatus">
+		,roleStatus=#{roleStatus}
+		</if>
+		where roleId=#{roleId}
+	</update>
+	
+	<insert id="addMgrRole" useGeneratedKeys="true" keyProperty="roleId" parameterType="cn.mycom.sysadmin.mgrrole.domain.MgrRole">
+		insert into ${baseTablePrefix}mgr_role(roleName,roleDesc,roleStatus,roleSort,updateTime,addTime)
+		values(#{roleName},#{roleDesc},#{roleStatus},#{roleSort},#{updateTime},#{addTime})
+	</insert>
+	
+	<delete id="deleteMgrRoleById"   parameterType="map">
+	delete from ${baseTablePrefix}mgr_role where roleId=#{roleId}
+	</delete>	
+	
+	
+	
+	<insert id="addMgrRoleMenuPermissions" parameterType="map">
+    	INSERT into ${baseTablePrefix}mgrrole_menupermission(
+					roleId, mpId, addTime
+				)VALUES
+				<foreach collection ="roles" item="item" index= "index" separator =",">
+					(
+					#{item.roleId},#{item.mpId}, #{item.addTime}
+                 )
+             </foreach >
+	</insert>
+	<!-- 关联表进行批量删除操作 -->
+	<delete id="deleteMgrRoleMenuPermissionsByRoleId">
+		delete from ${baseTablePrefix}mgrrole_menupermission where roleId=#{roleId}
+	</delete>
+</mapper>

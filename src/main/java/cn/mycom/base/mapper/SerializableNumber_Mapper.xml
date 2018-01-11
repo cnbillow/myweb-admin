@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SerializableNumberDao">
+	
+	<update id="updateNextSerializableNumber" parameterType="map">
+		update ${baseTablePrefix}serializable_number set currentNumber=currentNumber+1,updateTime=#{updateTime}
+		where 1=1 AND serialKey=#{serialKey}
+	</update>
+	<insert id="saveSerializableNumber" parameterType="map">
+		INSERT INTO ${baseTablePrefix}serializable_number(serialKey, currentNumber, remark, updateTime, addTime) 
+		VALUES(#{serialKey}, #{currentNumber}, #{remark}, #{updateTime},#{addTime})
+	</insert>
+	<select id="getSerializableNumber" parameterType="map" resultType="cn.mycom.base.domain.SerializableNumber">
+		select  * from ${baseTablePrefix}serializable_number
+		where 1=1 AND serialKey=#{serialKey}
+	</select>
+</mapper>

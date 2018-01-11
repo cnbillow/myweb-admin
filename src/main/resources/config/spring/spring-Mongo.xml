@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.8.xsd">
+	<description>spring整合mongo，本配置仅支持单个mongo实例</description>
+	 
+	
+	<!-- 不需要密码验证的配置方式 -->
+	<mongo:mongo-client host="${mongo.hostport}" port="${mongo.connectionsPerHost}" id="mongo">
+   		<mongo:client-options
+		    threads-allowed-to-block-for-connection-multiplier="${mongo.threadsAllowedToBlockForConnectionMultiplier}"
+		    connect-timeout="${mongo.connectTimeout}"
+		    max-wait-time="${mongo.maxWaitTime}"
+		    socket-keep-alive="${mongo.socketKeepAlive}"
+		    socket-timeout="${mongo.socketTimeout}"
+		    write-concern="NORMAL"/>
+	</mongo:mongo-client>
+
+   <!-- spring连接mongodb数据库的配置    需要密码验证的方式  tuzongxun:123456@mongoTest 对应用户，密码 数据库 -->  
+	<mongo:mongo-client host="${mongo.hostport}" port="${mongo.connectionsPerHost}" credentials="${mongo.credentials}" id="mongoCredentials">    
+		<mongo:client-options 
+	       	threads-allowed-to-block-for-connection-multiplier="${mongo.threadsAllowedToBlockForConnectionMultiplier}"
+		    connect-timeout="${mongo.connectTimeout}"
+		    max-wait-time="${mongo.maxWaitTime}"
+		    socket-keep-alive="${mongo.socketKeepAlive}"
+		    socket-timeout="${mongo.socketTimeout}"
+		    write-concern="SAFE"/>    
+    </mongo:mongo-client> 
+    
+    <mongo:db-factory dbname="${mongo.dbName}" mongo-ref="mongo" id="mongoFactory" />
+    <mongo:db-factory dbname="${mongo.dbName}" mongo-ref="mongoCredentials" id="mongoCredentialsFactory" />
+    
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg ref="mongoFactory" />
+    </bean>
+    <bean id="mongoCredentialTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg ref="mongoCredentialsFactory" />
+    </bean>
+</beans>

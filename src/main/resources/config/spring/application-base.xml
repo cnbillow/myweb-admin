@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+	
+	<!-- 自动扫描指定的包下面的通过注解标识的组件 -->
+	<context:component-scan base-package="cn.mycom">
+		<context:include-filter type="annotation" expression="org.aspectj.lang.annotation.Aspect"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	<bean id="springContextHelper" class="cn.mycom.spring.context.SpringContextHelper"></bean>
+	<!-- aop 操作日志 -->
+	<bean id="operateLogAspect" class="cn.mycom.aspect.OperateLogAspect"/>
+	<bean id="sysMgrSessionAspect" class="cn.mycom.aspect.SysMgrSessionAspect"/>
+	<aop:config>
+		<aop:aspect ref="operateLogAspect">
+	   		<aop:around method="tolog" pointcut="execution(* cn..*.sysadmin..*..*.*Dao.add*(..)) or execution(* cn..*.sysadmin..*..*.*Dao.update*(..)) or execution(* cn..*.sysadmin..*..*.*Dao.delete*(..))"/>
+		</aop:aspect>
+		<aop:aspect ref="sysMgrSessionAspect">
+	   		<aop:after-returning method="afterOperator" pointcut="execution(* cn..*.sysadmin..*..*.*Service.add*(..)) or execution(* cn..*.sysadmin..*..*.*Service.update*(..)) or execution(* cn..*.sysadmin..*..*.*Service.delete*(..))"/>
+		</aop:aspect>
+	</aop:config>
+	
+	<context:property-placeholder location="classpath:app.properties" />
+	<!-- MYSql数据库源 -->
+	<import resource="spring-datasource-mysql.xml"/>
+	<!-- redis集成 
+	<import resource="classpath:config/spring/spring-Redis.xml"/>
+	-->
+	<!-- mongo集成  暂无环境可用
+	<import resource="classpath:config/spring/spring-Mongo.xml"/>
+	-->
+	<!-- 
+    	定时任务
+     -->
+    <import resource="spring-quartz.xml" />
+	<!-- 启动AOP支持 -->
+	<aop:aspectj-autoproxy/>
+</beans>
