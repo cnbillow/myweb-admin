@@ -2,7 +2,8 @@
 SQLyog Ultimate v9.20 
 MySQL - 5.5.32 : Database - mycom_db
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -30,7 +31,7 @@ CREATE TABLE `base_mgr_core_login_log` (
   `USERTYPE` tinyint(4) DEFAULT NULL COMMENT '用户类型：0普通用户，1管理员用户',
   `LOGINTIME` datetime NOT NULL COMMENT '登录时间',
   PRIMARY KEY (`LOGINID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='登录日志表';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='登录日志表';
 
 /*Data for the table `base_mgr_core_login_log` */
 
@@ -38,6 +39,11 @@ insert  into `base_mgr_core_login_log`(`LOGINID`,`LOGINUSERID`,`LOGINNAME`,`IP`,
 insert  into `base_mgr_core_login_log`(`LOGINID`,`LOGINUSERID`,`LOGINNAME`,`IP`,`USERMOBILE`,`ALIASNUM`,`PROVCODE`,`AREACODE`,`CARDTYPE`,`LOGINTYPE`,`USERTYPE`,`LOGINTIME`) values (2,1,'mycomadmin','127.0.0.1','13800000000',NULL,0,0,NULL,1,1,'2018-01-11 17:07:12');
 insert  into `base_mgr_core_login_log`(`LOGINID`,`LOGINUSERID`,`LOGINNAME`,`IP`,`USERMOBILE`,`ALIASNUM`,`PROVCODE`,`AREACODE`,`CARDTYPE`,`LOGINTYPE`,`USERTYPE`,`LOGINTIME`) values (3,3,'admin','127.0.0.1','',NULL,0,0,NULL,1,1,'2018-01-11 17:07:39');
 insert  into `base_mgr_core_login_log`(`LOGINID`,`LOGINUSERID`,`LOGINNAME`,`IP`,`USERMOBILE`,`ALIASNUM`,`PROVCODE`,`AREACODE`,`CARDTYPE`,`LOGINTYPE`,`USERTYPE`,`LOGINTIME`) values (4,3,'admin','localhost','',NULL,0,0,NULL,1,1,'2018-01-11 17:18:47');
+insert  into `base_mgr_core_login_log`(`LOGINID`,`LOGINUSERID`,`LOGINNAME`,`IP`,`USERMOBILE`,`ALIASNUM`,`PROVCODE`,`AREACODE`,`CARDTYPE`,`LOGINTYPE`,`USERTYPE`,`LOGINTIME`) values (5,3,'admin','localhost','',NULL,0,0,NULL,1,1,'2018-01-11 17:52:46');
+insert  into `base_mgr_core_login_log`(`LOGINID`,`LOGINUSERID`,`LOGINNAME`,`IP`,`USERMOBILE`,`ALIASNUM`,`PROVCODE`,`AREACODE`,`CARDTYPE`,`LOGINTYPE`,`USERTYPE`,`LOGINTIME`) values (6,3,'admin','localhost','',NULL,0,0,NULL,1,1,'2018-01-17 09:28:06');
+insert  into `base_mgr_core_login_log`(`LOGINID`,`LOGINUSERID`,`LOGINNAME`,`IP`,`USERMOBILE`,`ALIASNUM`,`PROVCODE`,`AREACODE`,`CARDTYPE`,`LOGINTYPE`,`USERTYPE`,`LOGINTIME`) values (7,3,'admin','localhost','',NULL,0,0,NULL,1,1,'2018-01-17 09:34:51');
+insert  into `base_mgr_core_login_log`(`LOGINID`,`LOGINUSERID`,`LOGINNAME`,`IP`,`USERMOBILE`,`ALIASNUM`,`PROVCODE`,`AREACODE`,`CARDTYPE`,`LOGINTYPE`,`USERTYPE`,`LOGINTIME`) values (8,3,'admin','localhost','',NULL,0,0,NULL,1,1,'2018-01-17 09:36:25');
+insert  into `base_mgr_core_login_log`(`LOGINID`,`LOGINUSERID`,`LOGINNAME`,`IP`,`USERMOBILE`,`ALIASNUM`,`PROVCODE`,`AREACODE`,`CARDTYPE`,`LOGINTYPE`,`USERTYPE`,`LOGINTIME`) values (9,3,'admin','localhost','',NULL,0,0,NULL,1,1,'2018-01-17 10:30:05');
 
 /*Table structure for table `base_mgr_core_menu_permission` */
 
@@ -124,36 +130,36 @@ CREATE TABLE `base_mgr_core_mgrrole_menupermission` (
 
 /*Data for the table `base_mgr_core_mgrrole_menupermission` */
 
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,1,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,2,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,3,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,4,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,5,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,6,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,7,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,8,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,9,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,10,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,11,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,12,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,13,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,14,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,15,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,16,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,17,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,18,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,19,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,20,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,21,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,22,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,23,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,24,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,25,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,26,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,27,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,28,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,29,'2018-01-11 00:00:00');
-insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,30,'2018-01-11 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,1,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,2,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,3,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,4,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,5,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,6,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,7,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,8,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,9,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,10,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,11,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,12,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,13,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,14,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,15,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,16,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,17,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,18,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,19,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,20,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,21,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,22,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,23,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,24,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,25,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,26,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,27,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,28,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,29,'2018-01-17 00:00:00');
+insert  into `base_mgr_core_mgrrole_menupermission`(`roleId`,`mpId`,`addTime`) values (1,30,'2018-01-17 00:00:00');
 
 /*Table structure for table `base_mgr_core_operator_log` */
 
